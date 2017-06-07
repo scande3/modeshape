@@ -39,6 +39,7 @@ import org.modeshape.jcr.value.Reference;
 import org.modeshape.jcr.value.ValueFactories;
 import org.modeshape.jcr.value.ValueFactory;
 import org.modeshape.jcr.value.ValueFormatException;
+import org.modeshape.common.logging.Logger;
 
 /**
  * The standard {@link ValueFactory} for {@link PropertyType#NAME} values.
@@ -90,7 +91,10 @@ public class NameValueFactory extends AbstractValueFactory<Name> implements Name
                         TextDecoder decoder ) {
         if (value == null) return null;
         if (decoder == null) decoder = getDecoder();
-        try {
+        // if (value.contains("pcdm")) {
+        //     value = "{http://pcdm.org/models#}Object";
+        // }
+        // try {
             if (value.length() == 0) {
                 return BLANK_NAME;
             }
@@ -144,24 +148,44 @@ public class NameValueFactory extends AbstractValueFactory<Name> implements Name
                 // Look for a namespace match ...
                 String namespaceUri = this.namespaceRegistryHolder.getNamespaceRegistry().getNamespaceForPrefix(prefix);
                 // Fail if no namespace is found ...
-                if (namespaceUri == null) {
-                    throw new NamespaceException(GraphI18n.noNamespaceRegisteredForPrefix.text(prefix));
+                if (namespaceUri == null) { 
+                        // return BLANK_NAME;
+                        // namespaceUri = this.namespaceRegistryHolder.getNamespaceRegistry().getNamespaceForPrefix("fedora");
+                        this.logURI("ns001");
+                        this.logURI("ns002");
+                        this.logURI("ns003");
+                        this.logURI("ns004");
+                        this.logURI("ns005");
+                        this.logURI("ns006");
+                        this.logURI("ns007");
+                        this.logURI("ns008");
+                        this.logURI("ns010");
+                        this.logURI("ns011");
+                        this.logURI("ns012");
+                        throw new NamespaceException(GraphI18n.noNamespaceRegisteredForPrefix.text(prefix+"GotHere"));
                 }
                 int nextIndexAfterColon = colonIndex + 1;
                 String localName = nextIndexAfterColon < value.length() ? value.substring(nextIndexAfterColon) : "";
                 localName = decoder.decode(localName);
                 return new BasicName(namespaceUri, localName);
-            }
-        } catch (NamespaceException err) {
-            throw new ValueFormatException(value, getPropertyType(),
-                                           GraphI18n.errorConvertingType.text(String.class.getSimpleName(),
-                                                                              Name.class.getSimpleName(), value), err);
         }
+        // } catch (NamespaceException err) {
+        //    throw new ValueFormatException(value, getPropertyType(),
+        //                                   GraphI18n.errorConvertingType.text(String.class.getSimpleName(),
+        //                                                                      Name.class.getSimpleName(), value), err);
+        // }
         throw new ValueFormatException(value, getPropertyType(), GraphI18n.errorConvertingType.text(String.class.getSimpleName(),
                                                                                                     Name.class.getSimpleName(),
                                                                                                     value));
     }
 
+    public void logURI(String testerPrefix) {
+                        String namespaceUri = this.namespaceRegistryHolder.getNamespaceRegistry().getNamespaceForPrefix(testerPrefix);
+                        if (namespaceUri == null) {
+                            namespaceUri = "None";
+                        }
+                        Logger.getLogger(getClass()).debug("Namespace Test for: " + testerPrefix  + " with value of: " + namespaceUri);
+    }
     @Override
     public Name create( String namespaceUri,
                         String localName ) {

@@ -34,6 +34,7 @@ import org.modeshape.jcr.value.Name;
 import org.modeshape.jcr.value.NamespaceRegistry;
 import org.modeshape.jcr.value.NamespaceRegistry.Namespace;
 import org.modeshape.jcr.value.ValueFormatException;
+import org.modeshape.common.logging.Logger;
 
 /**
  * A thread-safe JCR {@link javax.jcr.NamespaceRegistry} implementation that has the standard JCR namespaces pre-registered and
@@ -201,6 +202,9 @@ class JcrNamespaceRegistry implements org.modeshape.jcr.api.NamespaceRegistry {
         CheckArg.isNotNull(prefix, "prefix");
         CheckArg.isNotNull(uri, "uri");
         checkSession();
+        
+        Logger.getLogger(getClass()).debug("Registering namespace prefix: " + prefix + " with uri of: " + uri);
+        Logger.getLogger(getClass()).warn(JcrI18n.jndiReadOnly, prefix, uri);
 
         // Check the zero-length prefix and zero-length URI ...
         if (DEFAULT_NAMESPACE_PREFIX.equals(prefix) || DEFAULT_NAMESPACE_URI.equals(uri)) {
